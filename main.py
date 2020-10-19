@@ -160,7 +160,7 @@ def hit_card(username, password):
 
 
 def main():
-    config = os.environ["CONFIG"]
+    config = json.loads(os.environ["CONFIG"])
     for item in config:
         hit_card(item['username'], item['password'])
 
