@@ -1,8 +1,8 @@
 # ZJU-nCov-Hitcarder
 
-浙大nCov肺炎健康打卡定时自动脚本
+浙大nCov肺炎健康打卡定时自动脚本，多账号 github Actions 版本
 
- - 可定时，默认为每天6点5分
+ - 可定时，默认为每天11点12分
  - 默认每次提交上次所提交的内容（只有时间部分更新）
  - 系统表单如有更新，在当天自行手机打卡，后面会自动按照你更新后的选项继续打卡
 
@@ -14,41 +14,26 @@
 
 ## Usage
 
-1. clone本项目（为了加快clone速度，可以指定clone深度`--depth 1`，只克隆最近一次commit），并cd到本目录
-    ```bash
-    $ git clone https://github.com/Tishacy/ZJU-nCov-Hitcarder.git --depth 1
-    $ cd ZJU-nCov-Hitcarder
-    ```
-    
-2. 安装依赖
+1. fork本项目
 
-    ```bash
-    $ pip3 install -r requirements.txt
-    ```
-
-3. 将config.json.templ模板文件重命名为config.json文件，并修改 config.json中的配置
+2. 在项目设置中添加名为 CONFIG 的 Secrets，将 config.example.json 模板文件的内容复制为值，并进行适当修改
   
     ```javascript
-    {
+    [
+      {
         "username": "你的浙大统一认证平台用户名",
-        "password": "你的浙大统一认证平台密码",
-        "schedule": {
-            "hour": "6",    // 6点
-            "minute": "5"   // 5分 
-        }
-    }
+        "password": "你的浙大统一认证平台密码"
+      },
+      {
+        "username": "你的浙大统一认证平台用户名",
+        "password": "你的浙大统一认证平台密码"
+      }
+    ]
     ```
-
-4. 启动定时自动打卡脚本
-
-   ```bash
-   $ python3 daka.py
-   ```
 
 
 ## Tips
 
-- 为了防止电脑休眠或关机时程序不运行，推荐把这个部署到VPS上
 - 测试程序是否正常运行：可以先把定的时间放在最近的一个时间（比如下一分钟）看下到时间是否可以正常打卡
 - 想指定自己打卡地理位置的童鞋可以参考[8#issue](https://github.com/Tishacy/ZJU-nCov-Hitcarder/issues/8#issue-565719250)
 
