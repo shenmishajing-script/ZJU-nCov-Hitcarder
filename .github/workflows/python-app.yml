@@ -5,7 +5,7 @@ name: Python application
 
 on:
   schedule:
-    - cron: '12 11 * * *'
+    - cron: '12 3 * * *'
   workflow_dispatch:
   watch:
     types: [started]
