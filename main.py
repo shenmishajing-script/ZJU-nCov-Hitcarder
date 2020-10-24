@@ -147,16 +147,18 @@ def hit_card(username, password):
     try:
         res = dk.post()
         if str(res['e']) == '0':
-            print('🦄 已为您打卡成功！')
+            print('已为您打卡成功！')
         else:
-            print('🦄 ' + res['m'])
+            print(res['m'])
     except:
         print('数据提交失败')
         return
 
 
 def main():
-    config = json.loads(os.environ["CONFIG"])
+    config = os.environ["CONFIG"]
+    # config = open('config.json').read()
+    config = json.loads(config)
     for i, item in enumerate(config):
         hit_card(item['username'], item['password'])
         if i < len(config) - 1:
