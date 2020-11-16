@@ -22,12 +22,13 @@ class DaKa(object):
         self.base_url = "https://healthreport.zju.edu.cn/ncov/wap/default/index"
         self.save_url = "https://healthreport.zju.edu.cn/ncov/wap/default/save"
         self.sess = requests.Session()
+        requests.adapters.DEFAULT_RETRIES = 5
 
     def login(self):
         """Login to ZJU platform"""
-        res = self.sess.get(self.login_url)
+        res = self.sess.get(self.login_url, headers = {'Connection': 'close'})
         execution = re.search('name="execution" value="(.*?)"', res.text).group(1)
-        res = self.sess.get(url = 'https://zjuam.zju.edu.cn/cas/v2/getPubKey').json()
+        res = self.sess.get(url = 'https://zjuam.zju.edu.cn/cas/v2/getPubKey', headers = {'Connection': 'close'}).json()
         n, e = res['modulus'], res['exponent']
         encrypt_password = self._rsa_encrypt(self.password, e, n)
 
@@ -37,7 +38,7 @@ class DaKa(object):
             'execution': execution,
             '_eventId': 'submit'
         }
-        res = self.sess.post(url = self.login_url, data = data)
+        res = self.sess.post(url = self.login_url, data = data, headers = {'Connection': 'close'})
 
         # check if login successfully
         if '统一身份认证' in res.content.decode():
@@ -46,7 +47,7 @@ class DaKa(object):
 
     def post(self):
         """Post the hitcard info"""
-        res = self.sess.post(self.save_url, data = self.info)
+        res = self.sess.post(self.save_url, data = self.info, headers = {'Connection': 'close'})
         return json.loads(res.text)
 
     def get_date(self):
@@ -57,7 +58,7 @@ class DaKa(object):
     def get_info(self, html = None):
         """Get hitcard info, which is the old info with updated new time."""
         if not html:
-            res = self.sess.get(self.base_url)
+            res = self.sess.get(self.base_url, headers = {'Connection': 'close'})
             html = res.content.decode()
 
         try:
