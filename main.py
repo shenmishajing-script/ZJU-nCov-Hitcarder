@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
-import requests, json, re
-import time, datetime, os
+import datetime
+import os
+import time
+
+import json
+import re
+import requests
 
 
 class DaKa(object):
@@ -26,9 +31,9 @@ class DaKa(object):
 
     def login(self):
         """Login to ZJU platform"""
-        res = self.sess.get(self.login_url, headers = {'Connection': 'close'})
+        res = self.sess.get(self.login_url, headers = {'Connection': 'close'}, timeout = 60)
         execution = re.search('name="execution" value="(.*?)"', res.text).group(1)
-        res = self.sess.get(url = 'https://zjuam.zju.edu.cn/cas/v2/getPubKey', headers = {'Connection': 'close'}).json()
+        res = self.sess.get(url = 'https://zjuam.zju.edu.cn/cas/v2/getPubKey', headers = {'Connection': 'close'}, timeout = 60).json()
         n, e = res['modulus'], res['exponent']
         encrypt_password = self._rsa_encrypt(self.password, e, n)
 
@@ -38,7 +43,7 @@ class DaKa(object):
             'execution': execution,
             '_eventId': 'submit'
         }
-        res = self.sess.post(url = self.login_url, data = data, headers = {'Connection': 'close'})
+        res = self.sess.post(url = self.login_url, data = data, headers = {'Connection': 'close'}, timeout = 60)
 
         # check if login successfully
         if '统一身份认证' in res.content.decode():
@@ -47,7 +52,7 @@ class DaKa(object):
 
     def post(self):
         """Post the hitcard info"""
-        res = self.sess.post(self.save_url, data = self.info, headers = {'Connection': 'close'})
+        res = self.sess.post(self.save_url, data = self.info, headers = {'Connection': 'close'}, timeout = 60)
         return json.loads(res.text)
 
     def get_date(self):
@@ -58,7 +63,7 @@ class DaKa(object):
     def get_info(self, html = None):
         """Get hitcard info, which is the old info with updated new time."""
         if not html:
-            res = self.sess.get(self.base_url, headers = {'Connection': 'close'})
+            res = self.sess.get(self.base_url, headers = {'Connection': 'close'}, timeout = 60)
             html = res.content.decode()
 
         try:
@@ -157,8 +162,10 @@ def hit_card(username, password):
 
 
 def main():
-    config = os.environ["CONFIG"]
-    # config = open('config.json').read()
+    if os.path.exists('config.json'):
+        config = open('config.json').read()
+    else:
+        config = os.environ["CONFIG"]
     config = json.loads(config)
     for i, item in enumerate(config):
         hit_card(item['username'], item['password'])
