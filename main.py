@@ -153,7 +153,8 @@ def hit_card(username, password):
     try:
         res = dk.post()
         if str(res['e']) == '0':
-            print('已为您打卡成功！')
+            info = {'date': dk.info['date'], 'area': dk.info['area']}
+            print(f'已为您打卡成功！本次打卡信息：{info}')
         else:
             print(res['m'])
     except:
