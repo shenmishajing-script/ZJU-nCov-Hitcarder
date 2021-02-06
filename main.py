@@ -152,11 +152,11 @@ def hit_card(username, password):
     print('正在为您打卡打卡打卡')
     try:
         res = dk.post()
+        info = {'date': dk.info['date'], 'area': dk.info['area']}
         if str(res['e']) == '0':
-            info = {'date': dk.info['date'], 'area': dk.info['area']}
             print(f'已为您打卡成功！本次打卡信息：{info}')
         else:
-            print(res['m'])
+            print(res['m'] + f'，本次打卡信息：{info}')
     except:
         print('数据提交失败')
         return
